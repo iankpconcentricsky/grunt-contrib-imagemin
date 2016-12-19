@@ -5,8 +5,13 @@ var path = require('path');
 var async = require('async');
 var chalk = require('chalk');
 var prettyBytes = require('pretty-bytes');
-var Imagemin = require('imagemin');
+var imagemin = require('imagemin');
 var rename = require('gulp-rename');
+
+var imageminJpegtran = require('imagemin-jpegtran');
+var imageminGifsicle = require('imagemin-gifsicle');
+var imageminOptipng = require('imagemin-optipng');
+var imageminSvgo = require('imagemin-svgo');
 
 /*
  * grunt-contrib-imagemin
@@ -27,7 +32,11 @@ module.exports = function (grunt) {
             progressive: true
         });
 
+
         async.eachLimit(files, os.cpus().length, function (file, next) {
+
+            console.log("file", file, file.src);
+
             var msg;
             /*var imagemin = new Imagemin()
                 .src(file.src[0])
@@ -39,10 +48,10 @@ module.exports = function (grunt) {
 
             var imageminOpts =  {
                 plugins:[
-                            Imagemin.jpegtran(options),
-                            Imagemin.gifsicle(options),
-                            Imagemin.optipng(options),
-                            Imagemin.svgo({plugins: options.svgoPlugins || []})
+                    imageminJpegtran(options),
+                    imageminGifsicle(options),
+                    imageminOptipng(options),
+                    imageminSvgo({plugins: options.svgoPlugins || []})
                ].concat(options.use || [])
             };
 
@@ -58,18 +67,25 @@ module.exports = function (grunt) {
             }
 
             fs.stat(file.src[0], function (err, stats) {
+
+                console.log('statted?', err);
+
                 if (err) {
                     grunt.warn(err + ' in file ' + file.src[0]);
                     return next();
                 }
 
-                var imagemin = Imagemin(
-                    file.src[0],
+
+
+                console.log('minify ->', file.src, file.dest);
+
+                var min = imagemin(
+                    [file.src[0] ],
                     path.dirname(file.dest),
                     imageminOpts
                 );
 
-                imagemin.then(function(data){
+                min.then(function(data){
                     var origSize = stats.size;
                     var diffSize = origSize - ((data[0].contents && data[0].contents.length) || 0);
 
@@ -85,11 +101,11 @@ module.exports = function (grunt) {
                     }
 
                     grunt.verbose.writeln(chalk.green('✔ ') + file.src[0] + chalk.gray(' (' + msg + ')'));
-                    process.nextTick(next);
-                })
-                imagemin.catch(function(err){
-                    grunt.warn(err + ' in file ' + file.src[0]);
-                    return next();
+                    return process.nextTick(next);
+                });
+                min.catch(function(err){
+                    grunt.warn(err + ' fuckup in file ' + file.src[0], arguments);
+                    return process.nextTick(next);
                 });
 
                 /*

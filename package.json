@@ -19,8 +19,12 @@
     "async": "^2.1.4",
     "chalk": "^1.0.0",
     "gulp-rename": "^1.2.0",
-    "imagemin": "^5.0.0",
-    "pretty-bytes": "^4.0.2"
+    "imagemin": "^5.2.2",
+    "pretty-bytes": "^4.0.2",
+    "imagemin-jpegtran": "^5.0.2",
+    "imagemin-gifsicle": "^5.1.0",
+    "imagemin-optipng": "^5.2.1",
+    "imagemin-svgo": "^5.2.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
