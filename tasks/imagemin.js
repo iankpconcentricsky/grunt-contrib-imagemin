@@ -63,7 +63,7 @@ module.exports = function (grunt) {
                     return next();
                 }
 
-                var imagemin = await Imagemin(
+                var imagemin = Imagemin(
                     file.src[0],
                     path.dirname(file.dest),
                     imageminOpts
