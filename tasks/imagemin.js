@@ -29,20 +29,32 @@ module.exports = function (grunt) {
 
         async.eachLimit(files, os.cpus().length, function (file, next) {
             var msg;
-            var imagemin = new Imagemin()
+            /*var imagemin = new Imagemin()
                 .src(file.src[0])
                 .dest(path.dirname(file.dest))
                 .use(Imagemin.jpegtran(options))
                 .use(Imagemin.gifsicle(options))
                 .use(Imagemin.optipng(options))
-                .use(Imagemin.svgo({plugins: options.svgoPlugins || []}));
+                .use(Imagemin.svgo({plugins: options.svgoPlugins || []}));*/
 
-            if (options.use) {
+            var imageminOpts =  {
+                plugins:[
+                            Imagemin.jpegtran(options),
+                            Imagemin.gifsicle(options),
+                            Imagemin.optipng(options),
+                            Imagemin.svgo({plugins: options.svgoPlugins || []})
+               ].concat(options.use || [])
+            };
+
+
+
+
+            /*if (options.use) {
                 options.use.forEach(imagemin.use.bind(imagemin));
-            }
+            }*/
 
             if (path.basename(file.src[0]) !== path.basename(file.dest)) {
-                imagemin.use(rename(path.basename(file.dest)));
+                imageminOpts.plugins.push(rename(path.basename(file.dest)));
             }
 
             fs.stat(file.src[0], function (err, stats) {
@@ -51,6 +63,36 @@ module.exports = function (grunt) {
                     return next();
                 }
 
+                var imagemin = await Imagemin(
+                    file.src[0],
+                    path.dirname(file.dest),
+                    imageminOpts
+                );
+
+                imagemin.then(function(data){
+                    var origSize = stats.size;
+                    var diffSize = origSize - ((data[0].contents && data[0].contents.length) || 0);
+
+                    totalSaved += diffSize;
+
+                    if (diffSize < 10) {
+                        msg = 'already optimized';
+                    } else {
+                        msg = [
+                            'saved ' + prettyBytes(diffSize) + ' -',
+                            (diffSize / origSize * 100).toFixed() + '%'
+                        ].join(' ');
+                    }
+
+                    grunt.verbose.writeln(chalk.green('✔ ') + file.src[0] + chalk.gray(' (' + msg + ')'));
+                    process.nextTick(next);
+                })
+                imagemin.catch(function(err){
+                    grunt.warn(err + ' in file ' + file.src[0]);
+                    return next();
+                });
+
+                /*
                 imagemin.run(function (err, data) {
                     if (err) {
                         grunt.warn(err + ' in file ' + file.src[0]);
@@ -73,7 +115,7 @@ module.exports = function (grunt) {
 
                     grunt.verbose.writeln(chalk.green('✔ ') + file.src[0] + chalk.gray(' (' + msg + ')'));
                     process.nextTick(next);
-                });
+                });*/
             });
         }, function (err) {
             if (err) {
