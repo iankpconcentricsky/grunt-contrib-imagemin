@@ -1,7 +1,7 @@
 {
   "name": "grunt-contrib-imagemin",
   "description": "Minify images",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": {
     "name": "Grunt Team",
     "url": "http://gruntjs.com/"
@@ -16,11 +16,11 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "async": "^1.5.2",
+    "async": "^2.1.4",
     "chalk": "^1.0.0",
     "gulp-rename": "^1.2.0",
-    "imagemin": "^4.0.0",
-    "pretty-bytes": "^3.0.1"
+    "imagemin": "^5.0.0",
+    "pretty-bytes": "^4.0.2"
   },
   "devDependencies": {
     "grunt": "^1.0.0",
