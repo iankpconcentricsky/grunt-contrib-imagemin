@@ -130,6 +130,7 @@ grunt.registerTask('default', ['imagemin']);
 
 ## Release History
 
+ * 2016-12-20   v1.5.0   Upgrade to imagemin ^5.2, rewrite to promises
  * 2016-05-23   v1.0.1   Check for `data.contents` existence.
  * 2015-11-09   v1.0.0   Update to imagemin ^4.0.
  * 2015-03-22   v0.9.4   Add support for renaming files.
