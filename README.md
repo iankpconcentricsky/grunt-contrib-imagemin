@@ -1,4 +1,4 @@
-# grunt-contrib-imagemin v1.0.1 [![Build Status: Linux](https://travis-ci.org/gruntjs/grunt-contrib-imagemin.svg?branch=master)](https://travis-ci.org/gruntjs/grunt-contrib-imagemin) [![Build Status: Windows](https://ci.appveyor.com/api/projects/status/7w491e6edsuanreu/branch/master?svg=true)](https://ci.appveyor.com/project/gruntjs/grunt-contrib-imagemin/branch/master)
+# grunt-contrib-imagemin v1.1.0 [![Build Status: Linux](https://travis-ci.org/gruntjs/grunt-contrib-imagemin.svg?branch=master)](https://travis-ci.org/gruntjs/grunt-contrib-imagemin) [![Build Status: Windows](https://ci.appveyor.com/api/projects/status/7w491e6edsuanreu/branch/master?svg=true)](https://ci.appveyor.com/project/gruntjs/grunt-contrib-imagemin/branch/master)
 
 > Minify images
 
@@ -161,4 +161,4 @@ grunt.registerTask('default', ['imagemin']);
 
 Task submitted by [Sindre Sorhus](http://github.com/sindresorhus)
 
-*This file was generated on Mon May 23 2016 17:23:51.*
+*This file was generated on Mon Dec 19 2016 20:52:31.*
