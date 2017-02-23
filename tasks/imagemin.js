@@ -32,22 +32,11 @@ module.exports = function (grunt) {
             progressive: true
         });
 
-
         async.eachLimit(files, os.cpus().length, function (file, next) {
-
-            console.log("file", file, file.src);
-
             var msg;
-            /*var imagemin = new Imagemin()
-                .src(file.src[0])
-                .dest(path.dirname(file.dest))
-                .use(Imagemin.jpegtran(options))
-                .use(Imagemin.gifsicle(options))
-                .use(Imagemin.optipng(options))
-                .use(Imagemin.svgo({plugins: options.svgoPlugins || []}));*/
 
-            var imageminOpts =  {
-                plugins:[
+            var imageminOpts = {
+                plugins: [
                     imageminJpegtran(options),
                     imageminGifsicle(options),
                     imageminOptipng(options),
@@ -55,29 +44,15 @@ module.exports = function (grunt) {
                ].concat(options.use || [])
             };
 
-
-
-
-            /*if (options.use) {
-                options.use.forEach(imagemin.use.bind(imagemin));
-            }*/
-
             if (path.basename(file.src[0]) !== path.basename(file.dest)) {
                 imageminOpts.plugins.push(rename(path.basename(file.dest)));
             }
 
             fs.stat(file.src[0], function (err, stats) {
-
-                console.log('statted?', err);
-
                 if (err) {
                     grunt.warn(err + ' in file ' + file.src[0]);
                     return next();
                 }
-
-
-
-                console.log('minify ->', file.src, file.dest);
 
                 var min = imagemin(
                     [file.src[0] ],
@@ -85,7 +60,7 @@ module.exports = function (grunt) {
                     imageminOpts
                 );
 
-                min.then(function(data){
+                min.then(function(data) {
                     var origSize = stats.size;
                     var diffSize = origSize - ((data[0].contents && data[0].contents.length) || 0);
 
@@ -103,35 +78,11 @@ module.exports = function (grunt) {
                     grunt.verbose.writeln(chalk.green('✔ ') + file.src[0] + chalk.gray(' (' + msg + ')'));
                     return process.nextTick(next);
                 });
-                min.catch(function(err){
+
+                min.catch(function(err) {
                     grunt.warn(err + ' fuckup in file ' + file.src[0], arguments);
                     return process.nextTick(next);
                 });
-
-                /*
-                imagemin.run(function (err, data) {
-                    if (err) {
-                        grunt.warn(err + ' in file ' + file.src[0]);
-                        return next();
-                    }
-
-                    var origSize = stats.size;
-                    var diffSize = origSize - ((data[0].contents && data[0].contents.length) || 0);
-
-                    totalSaved += diffSize;
-
-                    if (diffSize < 10) {
-                        msg = 'already optimized';
-                    } else {
-                        msg = [
-                            'saved ' + prettyBytes(diffSize) + ' -',
-                            (diffSize / origSize * 100).toFixed() + '%'
-                        ].join(' ');
-                    }
-
-                    grunt.verbose.writeln(chalk.green('✔ ') + file.src[0] + chalk.gray(' (' + msg + ')'));
-                    process.nextTick(next);
-                });*/
             });
         }, function (err) {
             if (err) {
